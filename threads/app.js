@@ -1,30 +1,44 @@
 const { fork } = require('child_process');
+const { Worker } = require('worker_threads');
 
 const workerFunction = (array) => {
-    return new Promise((resolve, reject) => {});
+    return new Promise((resolve, reject) => {
+        const worker = new Worker('./worker.js', {
+            workerData: {
+                array,
+            },
+        });
+
+        worker.on('message', (msg) => {
+            resolve(msg);
+        });
+    });
 };
 
 const forkFunction = (array) => {
     return new Promise((resolve, reject) => {
-        const forkProcess = fork('fork.js');
-
-        forkProcess.on('message', (msg) => {
-            console.log('Получено сообщение fork', msg);
-        });
+        const forkProcess = fork('./fork.js');
 
         forkProcess.on('close', (code) => {
-            performance.mark('forkDone');
-            console.log('fork закончил работу с кодом', code);
+            resolve();
         });
 
-        performance.mark('forkStart');
         forkProcess.send({ array });
     });
 };
 
 const main = async () => {
-    // await workerFunction([25, 19, 48, 30]);
+    performance.mark('workerStart');
+    await workerFunction([25, 19, 48, 30]);
+    performance.mark('workerDone');
+    performance.measure('worker', 'workerStart', 'workerDone');
+    console.log(performance.getEntriesByName('worker').pop());
+
+    performance.mark('forkStart');
     await forkFunction([25, 19, 48, 30]);
+    performance.mark('forkDone');
+    performance.measure('fork', 'forkStart', 'forkDone');
+    console.log(performance.getEntriesByName('fork').pop());
 };
 
 main();
