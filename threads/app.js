@@ -1,8 +1,8 @@
 const { fork } = require('child_process');
 const { Worker } = require('worker_threads');
-const perf_hooks = require('perf_hooks');
+const { PerformanceObserver } = require('perf_hooks');
 
-const performanceObserver = new perf_hooks.PerformanceObserver((items, observer) => {
+const performanceObserver = new PerformanceObserver((items, observer) => {
     items.getEntries().forEach((e) => {
         console.log(`${e.name}: ${e.duration}`);
     });
@@ -14,9 +14,7 @@ performanceObserver.observe({ entryTypes: ['measure'] });
 const workerFunction = (array) => {
     return new Promise((resolve, reject) => {
         const worker = new Worker('./worker.js', {
-            workerData: {
-                array,
-            },
+            workerData: { array },
         });
 
         worker.on('message', (msg) => {
@@ -49,3 +47,11 @@ const main = async () => {
 };
 
 main();
+
+/**
+ * workerFunction: 991.9622000008821
+ * forkFunction: 1198.59090000391
+ *
+ * workerFunction: 1003.6624000072479
+ * forkFunction: 1225.521899998188
+ */
