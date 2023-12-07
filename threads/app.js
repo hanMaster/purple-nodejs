@@ -3,10 +3,9 @@ const { Worker } = require('worker_threads');
 const perf_hooks = require('perf_hooks');
 
 const performanceObserver = new perf_hooks.PerformanceObserver((items, observer) => {
-    const worker = items.getEntriesByName('workerFunction').pop();
-    console.log(`${worker.name}: ${worker.duration}`);
-    const fork = items.getEntriesByName('forkFunction').pop();
-    console.log(`${fork.name}: ${fork.duration}`);
+    items.getEntries().forEach((e) => {
+        console.log(`${e.name}: ${e.duration}`);
+    });
     observer.disconnect();
 });
 
