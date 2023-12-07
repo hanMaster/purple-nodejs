@@ -1,7 +1,7 @@
 import { homedir } from 'os';
 import { join } from 'path';
 import { promises } from 'fs';
-import { printError } from './log.service.js';
+import { printError, printSuccess } from './log.service.js';
 
 const filePath = join(homedir(), 'weather-settings.json');
 
@@ -24,9 +24,12 @@ export const handleSettings = async (args) => {
             settings.token = args.t;
         }
         try {
-            promises.writeFile(filePath, JSON.stringify(settings));
+            await promises.writeFile(filePath, JSON.stringify(settings));
+            printSuccess('Настройки успешно обновлены!');
+            process.exit(0);
         } catch (e) {
             printError(e);
+            process.exit(1);
         }
     }
     return settings;

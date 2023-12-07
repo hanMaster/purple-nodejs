@@ -1,5 +1,5 @@
 {
-    "name": "weather-cli",
+    "name": "weather-cli-han",
     "version": "1.0.0",
     "description": "CLI for receiving weather",
     "main": "weather.js",
@@ -8,8 +8,7 @@
     },
     "type": "module",
     "scripts": {
-        "start": "node index.js",
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "start": "node weather.js"
     },
     "keywords": [
         "cli",

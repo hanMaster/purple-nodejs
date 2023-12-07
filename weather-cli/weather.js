@@ -7,8 +7,7 @@ import { handleSettings } from './services/settings.service.js';
 const initCLI = async () => {
     const args = getArgs(...process.argv);
     if (args.h) {
-        printHelp();
-        return;
+        return printHelp();
     }
     const settings = await handleSettings(args);
     const weather = await getWeather(settings);
